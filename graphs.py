@@ -163,9 +163,9 @@ def build_graph(songs_file: str) -> SongGraph:
                 length = length[0] + length[2:]
 
             attributes = {
-                'name': line[1],
-                'artist': line[2],
-                'genre': line[3],
+                'name': line[1].lower(),
+                'artist': line[2].lower(),
+                'genre': line[3].lower(),
                 'year': int(line[4]),
                 'bpm': int(line[5]),
                 'energy': int(line[6]),
