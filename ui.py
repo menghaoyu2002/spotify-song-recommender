@@ -67,7 +67,7 @@ class HomePage(Page):
     def _search(self) -> None:
         """Search for the song name represented by self._search_variable in the song graph"""
         song_name = self._search_variable.get()
-        artist_list = self._ui.graph.get_artists_by_song(song_name)
+        artist_list = self._ui.graph.get_artists_by_song(song_name.lower())
 
         if artist_list == []:
             self._text.place_forget()
@@ -134,8 +134,8 @@ class ResultsPage(Page):
 
     def _show_results(self):
         song_name = self._search_variable.get()
-        artist_list = self._ui.graph.get_artists_by_song(song_name)
-        self._search_results.update_search(artist_list, song_name)
+        artist_list = self._ui.graph.get_artists_by_song(song_name.lower())
+        self._search_results.update_search(artist_list, song_name.lower())
         self._search_results.show_artists(True)
 
 
@@ -223,7 +223,7 @@ class RecommendationsPage(Page):
         for i in range(recommendation_count):
             label = label_list[i]
             recommended_name, recommended_artist = self._recommendations[i]
-            label.config(text=f'{recommended_name} by {recommended_artist}')
+            label.config(text=f'{recommended_name.title()} by {recommended_artist.title()}')
 
     def show_page(self, truth: bool) -> None:
         if truth:
@@ -299,8 +299,8 @@ class SearchResults:
     def update_search(self, artist_list: list[str], song_name: str) -> None:
         self._artist_list = artist_list
         self._song_name = song_name
-        self._artist_variable.set(artist_list)
-        self._song_info.config(text=f'{song_name} by')
+        self._artist_variable.set([artist.title() for artist in artist_list])
+        self._song_info.config(text=f'{song_name.title()} by')
 
     def _update_recommendedpage(self) -> None:
         selection = self._artist_listbox.curselection()
@@ -347,7 +347,7 @@ class UserInterface:
     results_page: ResultsPage
     recommend_page: RecommendationsPage
 
-    _current_page: Optional[Page]
+    _current_page: Page
 
     def __init__(self, root: tk.Tk, graph: SongGraph) -> None:
         """Initialize the user interface"""
@@ -380,7 +380,7 @@ if __name__ == '__main__':
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
     from graphs import build_graph
-    graph = build_graph('data/data.csv')
+    graph = build_graph('data/Spotify-2000.csv')
 
     UserInterface(root, graph)
     root.mainloop()
