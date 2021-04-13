@@ -124,7 +124,7 @@ class SongGraph:
             - 0 <= similarity_threshold
             - 0 <= num_songs
         """
-        if self.get_artists_by_song(name) == []:
+        if artist not in self.get_artists_by_song(name):
             return []
 
         lst_so_far = []
@@ -153,7 +153,7 @@ def build_graph(songs_file: str) -> SongGraph:
     """
     song_graph = SongGraph()
 
-    with open(songs_file) as csv_file:
+    with open(songs_file, encoding='utf-8') as csv_file:
         reader = csv.reader(csv_file)
         next(reader)
 
