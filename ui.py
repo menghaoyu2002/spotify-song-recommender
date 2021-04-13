@@ -1,8 +1,11 @@
+"""
+A Module which is responsible for the user interface
+"""
 from __future__ import annotations
 import tkinter as tk
 from tkinter.constants import BOTTOM, W
 from tkinter.font import BOLD
-from graphs import SongGraph, build_graph
+from graphs import SongGraph
 
 # Constants
 BG_COLOUR = 'gray10'
@@ -179,7 +182,7 @@ class RecommendationsPage(Page):
         self._recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
 
         self._title = tk.Label(self._frame,
-                               text= 'We Recommend Listening To ',
+                               text= 'We Recommend Listening To',
                                font=('Verdana', 40, BOLD),
                                bg=BG_COLOUR,
                                fg='deep sky blue',
@@ -296,7 +299,14 @@ class SearchResults:
                                          font=('arial narrow', 20),
                                          command=self._update_recommendedpage)
 
+        self._empty_selection = tk.Label(self._frame,
+                                         text='No Artist Was Selected',
+                                         font=('arialnarrow', 20),
+                                         bg=BG_COLOUR,
+                                         fg='red')
+
     def update_search(self, artist_list: list[str], song_name: str) -> None:
+        self._empty_selection.place_forget()
         self._artist_list = artist_list
         self._song_name = song_name
         self._artist_variable.set([artist.title() for artist in artist_list])
@@ -307,6 +317,11 @@ class SearchResults:
         if selection != ():
             self._ui.recommend_page.update_recommended(self._song_name, self._artist_list[selection[0]])
             self._ui.change_current_page(self._ui.recommend_page)
+        else:
+            self._empty_selection.place(x=WINDOW_WIDTH // 2,
+                                        y=WINDOW_HEIGHT - 100,
+                                        anchor='center')
+
 
     def show_artists(self, truth) -> None:
         if truth:
@@ -336,6 +351,8 @@ class SearchResults:
             self._error_message.place_forget()
             self._song_info.place_forget()
             self._confrim_button.place_forget()
+            self._empty_selection.place_forget()
+
 
 
 class UserInterface:
