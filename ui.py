@@ -175,11 +175,11 @@ class RecommendationsPage(Page):
         Page.__init__(self, frame, user_interface)
 
         # initializing the recommendations
-        self._recommendation1 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
-        self._recommendation2 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
-        self._recommendation3 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
-        self._recommendation4 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
-        self._recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 20), pady=10)
+        self._recommendation1 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        self._recommendation2 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        self._recommendation3 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        self._recommendation4 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        self._recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
 
         self._title = tk.Label(self._frame,
                                text= 'We Recommend Listening To',
@@ -395,7 +395,7 @@ if __name__ == '__main__':
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
     from graphs import build_graph
-    graph = build_graph('data/20k_data.csv')
+    graph = build_graph('data/data_medium.csv')
 
     UserInterface(root, graph)
     root.mainloop()
