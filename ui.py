@@ -395,7 +395,7 @@ if __name__ == '__main__':
     root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
     from graphs import build_graph
-    graph = build_graph('data/data.csv')
+    graph = build_graph('data/20k_data.csv')
 
     UserInterface(root, graph)
     root.mainloop()

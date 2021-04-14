@@ -18,7 +18,7 @@ def get_property_ranges(songs_file: str) -> dict[str, int]:
                    [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf],
                    [inf, n_inf]]
 
-    with open(songs_file, encoding="utf8") as csv_file:
+    with open(songs_file, encoding="utf-8") as csv_file:
         reader = csv.reader(csv_file)
         next(reader)
         for line in reader:

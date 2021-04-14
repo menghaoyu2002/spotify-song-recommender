@@ -8,7 +8,7 @@ from typing import Union
 from get_property_ranges import get_property_ranges
 
 # CONSTANT VALUES
-PROPERTY_RANGES = get_property_ranges('data/data.csv')
+PROPERTY_RANGES = get_property_ranges('data/20k_data.csv')
 
 
 class _Song:
@@ -128,8 +128,10 @@ class SongGraph:
             return []
 
         lst_so_far = []
-
+        x = 0
         for other in self._vertices.values():
+            print(x)
+            x += 1
             song = self._vertices[(name, artist)]
             if other == song:
                 continue
