@@ -5,7 +5,7 @@ import csv
 import math
 
 
-def get_property_ranges(songs_file: str) -> dict[str: int]:
+def get_property_ranges(songs_file: str) -> dict[str, int]:
     """Returns a dictionary mapping each numeric property of a song to the range of that property
     in the songs_file.
 

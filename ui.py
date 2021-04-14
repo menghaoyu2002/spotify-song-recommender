@@ -354,7 +354,6 @@ class SearchResults:
             self._empty_selection.place_forget()
 
 
-
 class UserInterface:
     """A class representing the main user interface"""
     mainframe: tk.Tk

@@ -41,10 +41,10 @@ class _Song:
         - self not in self.neighbors
         - all(self in v.neighbors for v in self._neighbours)
     """
-    attributes: dict[str: Union[str, int]]
-    neighbors: dict[_Song: float]
+    attributes: dict[str, Union[str, int]]
+    neighbors: dict[_Song, float]
 
-    def __init__(self, attributes: dict[str: Union[str, int]]):
+    def __init__(self, attributes: dict[str, Union[str, int]]):
         """Initialize a song."""
         self.attributes = attributes
         self.neighbors = {}
@@ -82,13 +82,13 @@ class SongGraph:
     # Private Instance Attributes:
     #   - _vertices: a dictionary mapping a tuple of a song's name and artist to the _Song instance
 
-    _vertices: dict[(str, str), _Song]
+    _vertices: dict[tuple[str, str], _Song]
 
     def __init__(self) -> None:
         """Initialize an empty graph (no vertices or edges)."""
         self._vertices = {}
 
-    def add_vertex(self, attributes: dict[str: Union[str, int]]) -> None:
+    def add_vertex(self, attributes: dict[str, Union[str, int]]) -> None:
         """Add a vertex to the graph. Do nothing if the song is already in the graph."""
         song = (attributes['name'], attributes['artist'])
         if song not in self._vertices:
@@ -112,7 +112,7 @@ class SongGraph:
                             name: str,
                             artist: str,
                             num_songs: int,
-                            similarity_threshold: float) -> list[(str, str)]:
+                            similarity_threshold: float) -> list[tuple[str, str]]:
         """Returns a list of song/artist names that are similar to the given song.
 
         Each tuple of strings in the list represents a song. The first string is the song name, the
@@ -198,7 +198,7 @@ def _insert_song(lst: list, other: _Song, similarity: float) -> None:
     lst.append(((name, artist), similarity))
 
 
-def _get_reformatted_songs(lst: list, num_songs: int, similarity_threshold) -> list[(str, str)]:
+def _get_reformatted_songs(lst: list, num_songs: int, similarity_threshold) -> list[tuple[str, str]]:
     """Return a list of up to the first num_songs songs in lst. If the similarity is 0, then the
     song is not included into the list."""
     lst_so_far = []
