@@ -388,7 +388,6 @@ class UserInterface:
         self._current_page.show_page(True)
 
 
-
 if __name__ == '__main__':
     root = tk.Tk()
     root.configure(background=BG_COLOUR)
