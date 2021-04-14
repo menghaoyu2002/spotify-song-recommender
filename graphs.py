@@ -8,7 +8,7 @@ from typing import Union
 from get_property_ranges import get_property_ranges
 
 # CONSTANT VALUES
-PROPERTY_RANGES = get_property_ranges('data/Spotify-2000.csv')
+PROPERTY_RANGES = get_property_ranges('data/data.csv')
 
 
 class _Song:
@@ -21,17 +21,17 @@ class _Song:
                 'name': str,
                 'artist': str,
                 'genre': str,
-                'year': int,
-                'bpm': int,
-                'energy': int,
-                'danceability': int(,
-                'loudness': int,
-                'liveness': int,
-                'valence': int,
-                'length': int,
-                'acousticness': int,
-                'speechiness': int,
-                'popularity': int
+                'year': float,
+                'bpm': float,
+                'energy': float,
+                'danceability': float(,
+                'loudness': float,
+                'liveness': float,
+                'valence': float,
+                'length': float,
+                'acousticness': float,
+                'speechiness': float,
+                'popularity': float
             }
         - neighbors: a dictionary mapping songs that are adjacent to self to their respective
         similarity
@@ -41,10 +41,10 @@ class _Song:
         - self not in self.neighbors
         - all(self in v.neighbors for v in self._neighbours)
     """
-    attributes: dict[str, Union[str, int]]
+    attributes: dict[str, Union[str, float]]
     neighbors: dict[_Song, float]
 
-    def __init__(self, attributes: dict[str, Union[str, int]]):
+    def __init__(self, attributes: dict[str, Union[str, float]]):
         """Initialize a song."""
         self.attributes = attributes
         self.neighbors = {}
@@ -88,7 +88,7 @@ class SongGraph:
         """Initialize an empty graph (no vertices or edges)."""
         self._vertices = {}
 
-    def add_vertex(self, attributes: dict[str, Union[str, int]]) -> None:
+    def add_vertex(self, attributes: dict[str, Union[str, float]]) -> None:
         """Add a vertex to the graph. Do nothing if the song is already in the graph."""
         song = (attributes['name'], attributes['artist'])
         if song not in self._vertices:
@@ -111,7 +111,7 @@ class SongGraph:
     def get_recommendations(self,
                             name: str,
                             artist: str,
-                            num_songs: int,
+                            num_songs: float,
                             similarity_threshold: float) -> list[tuple[str, str]]:
         """Returns a list of song/artist names that are similar to the given song.
 
@@ -166,17 +166,17 @@ def build_graph(songs_file: str) -> SongGraph:
                 'name': line[1].lower(),
                 'artist': line[2].lower(),
                 'genre': line[3].lower(),
-                'year': int(line[4]),
-                'bpm': int(line[5]),
-                'energy': int(line[6]),
-                'danceability': int(line[7]),
-                'loudness': int(line[8]),
-                'liveness': int(line[9]),
-                'valence': int(line[10]),
-                'length': int(length),
-                'acousticness': int(line[12]),
-                'speechiness': int(line[13]),
-                'popularity': int(line[14])
+                'year': float(line[4]),
+                'bpm': float(line[5]),
+                'energy': float(line[6]),
+                'danceability': float(line[7]),
+                'loudness': float(line[8]),
+                'liveness': float(line[9]),
+                'valence': float(line[10]),
+                'length': float(length),
+                'acousticness': float(line[12]),
+                'speechiness': float(line[13]),
+                'popularity': float(line[14])
             }
 
             song_graph.add_vertex(attributes)
@@ -198,9 +198,9 @@ def _insert_song(lst: list, other: _Song, similarity: float) -> None:
     lst.append(((name, artist), similarity))
 
 
-def _get_reformatted_songs(lst: list, num_songs: int, similarity_threshold) -> list[tuple[str, str]]:
+def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold) -> list[tuple[str, str]]:
     """Return a list of up to the first num_songs songs in lst. If the similarity is 0, then the
-    song is not included into the list."""
+    song is not included in the list."""
     lst_so_far = []
     for song, similarity in lst:
         if similarity >= similarity_threshold:

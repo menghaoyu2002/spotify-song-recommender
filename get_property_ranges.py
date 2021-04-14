@@ -18,16 +18,15 @@ def get_property_ranges(songs_file: str) -> dict[str, int]:
                    [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf],
                    [inf, n_inf]]
 
-    with open(songs_file) as csv_file:
+    with open(songs_file, encoding="utf8") as csv_file:
         reader = csv.reader(csv_file)
         next(reader)
-
         for line in reader:
             for i in range(11):
                 if i == 7 and line[11][1] == ',':
-                    val = int(line[11][0] + line[11][2:])
+                    val = float(line[11][0] + line[11][2:])
                 else:
-                    val = int(line[i + 4])
+                    val = float(line[i + 4])
 
                 if val < dict_values[i][0]:
                     dict_values[i][0] = val
