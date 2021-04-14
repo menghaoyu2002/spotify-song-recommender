@@ -127,18 +127,24 @@ class SongGraph:
         if artist not in self.get_artists_by_song(name):
             return []
 
+        song = self._vertices[(name, artist)]
         lst_so_far = []
-        for other in self._vertices.values():
-            song = self._vertices[(name, artist)]
-            if other == song:
-                continue
-            elif song.is_adjacent(other):
-                similarity = song.neighbors[other]
-            else:
-                similarity = song.get_similarity(other)
-                self.add_edge(song, other, similarity)
 
-            _insert_song(lst_so_far, other, similarity)
+        if len(song.neighbors) == len(self._vertices):
+            for other in song.neighbors:
+                similarity = song.neighbors[other]
+                _insert_song(lst_so_far, other, similarity)
+        else:
+            for other in self._vertices.values():
+                if other == song:
+                    continue
+                elif song.is_adjacent(other):
+                    similarity = song.neighbors[other]
+                else:
+                    similarity = song.get_similarity(other)
+                    self.add_edge(song, other, similarity)
+
+                _insert_song(lst_so_far, other, similarity)
 
         return _get_reformatted_songs(lst_so_far, num_songs, similarity_threshold)
 
