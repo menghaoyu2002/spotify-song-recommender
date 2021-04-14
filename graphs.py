@@ -8,7 +8,7 @@ from typing import Union
 from get_property_ranges import get_property_ranges
 
 # CONSTANT VALUES
-PROPERTY_RANGES = get_property_ranges('data/data_medium.csv')
+PROPERTY_RANGES = get_property_ranges('data/data_large.csv')
 
 
 class _Song:
