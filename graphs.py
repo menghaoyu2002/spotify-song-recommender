@@ -7,9 +7,6 @@ import csv
 from typing import Union
 from get_property_ranges import get_property_ranges
 
-# CONSTANT VALUES
-PROPERTY_RANGES = get_property_ranges('data/data_large.csv')
-
 
 class _Song:
     """A class to represent a song containing attributes based on its qualities.
@@ -24,7 +21,7 @@ class _Song:
                 'year': float,
                 'bpm': float,
                 'energy': float,
-                'danceability': float(,
+                'danceability': float,
                 'loudness': float,
                 'liveness': float,
                 'valence': float,
@@ -53,11 +50,28 @@ class _Song:
         """Returns whether other is adjacent to self."""
         return other in self.neighbors
 
-    def get_similarity(self, other: _Song) -> float:
+    def get_similarity(self, other: _Song, property_ranges: dict[str, float]) -> float:
         """Returns a number representing the similarity between self and other.
 
         Similarity is a percentage representing how similar of a song self is to other.
         It is calculated using a special algorithm.
+
+        Preconditions:
+            - property_ranges is a dictionary mapping numerical song properties to their maximum
+            range of their values in the form:
+            {
+                'year': float,
+                'bpm': float,
+                'energy': float,
+                'danceability': float,
+                'loudness': float,
+                'liveness': float,
+                'valence': float,
+                'length': float,
+                'acousticness': float,
+                'speechiness': float,
+                'popularity': float
+            }
         """
         sum_similarity = 0
 
@@ -67,7 +81,7 @@ class _Song:
                 new_num = other.attributes[p]
 
                 diff = abs(original_num - new_num)
-                percent_diff = diff / PROPERTY_RANGES[p] * 100
+                percent_diff = diff / property_ranges[p] * 100
                 sum_similarity += 100 - percent_diff
             elif p == 'artist' or p == 'genre':
                 sum_similarity += 100
@@ -81,12 +95,16 @@ class SongGraph:
     """A class to represent a graph of songs."""
     # Private Instance Attributes:
     #   - _vertices: a dictionary mapping a tuple of a song's name and artist to the _Song instance
+    #   - _property_ranges: a dictionary mapping a numeric song property to the range of it's values
+    #                       in the file the self is based off of
 
     _vertices: dict[tuple[str, str], _Song]
+    _property_ranges: dict[str, float]
 
-    def __init__(self) -> None:
+    def __init__(self, property_ranges: dict[str, float]) -> None:
         """Initialize an empty graph (no vertices or edges)."""
         self._vertices = {}
+        self._property_ranges = property_ranges
 
     def add_vertex(self, attributes: dict[str, Union[str, float]]) -> None:
         """Add a vertex to the graph. Do nothing if the song is already in the graph."""
@@ -111,7 +129,7 @@ class SongGraph:
     def get_recommendations(self,
                             name: str,
                             artist: str,
-                            num_songs: float,
+                            num_songs: int,
                             similarity_threshold: float) -> list[tuple[str, str]]:
         """Returns a list of song/artist names that are similar to the given song.
 
@@ -141,7 +159,7 @@ class SongGraph:
                 elif song.is_adjacent(other):
                     similarity = song.neighbors[other]
                 else:
-                    similarity = song.get_similarity(other)
+                    similarity = song.get_similarity(other, self._property_ranges)
                     self.add_edge(song, other, similarity)
 
                 _insert_song(lst_so_far, other, similarity)
@@ -156,7 +174,8 @@ def build_graph(songs_file: str) -> SongGraph:
     Preconditions:
         - songs_file is a is the path to a CSV file containing the data for spotify songs.
     """
-    song_graph = SongGraph()
+    property_ranges = get_property_ranges(songs_file)
+    song_graph = SongGraph(property_ranges)
 
     with open(songs_file, encoding='utf-8') as csv_file:
         reader = csv.reader(csv_file)
@@ -203,7 +222,8 @@ def _insert_song(lst: list, other: _Song, similarity: float) -> None:
     lst.append(((name, artist), similarity))
 
 
-def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold) -> list[tuple[str, str]]:
+def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold) -> \
+        list[tuple[str, str]]:
     """Return a list of up to the first num_songs songs in lst. If the similarity is 0, then the
     song is not included in the list."""
     lst_so_far = []
