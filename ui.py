@@ -26,7 +26,7 @@ class Page:
 
         the page is visible if and only if truth == true
         """
-        NotImplementedError
+        raise NotImplementedError
 
 
 class HomePage(Page):
