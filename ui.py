@@ -541,22 +541,22 @@ class UserInterface:
 
 
 if __name__ == '__main__':
-    # root = tk.Tk()
-    # root.configure(background=BG_COLOUR)
+    root = tk.Tk()
+    root.configure(background=BG_COLOUR)
 
-    # root.resizable(width=False, height=False)
-    # root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
+    root.resizable(width=False, height=False)
+    root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
-    # from graphs import build_graph
-    # graph = build_graph('data/data_large.csv')
+    from graphs import build_graph
+    graph = build_graph('data/data_large.csv')
 
-    # UserInterface(root, graph)
-    # root.mainloop()
+    UserInterface(root, graph)
+    root.mainloop()
 
-    import python_ta
-    python_ta.check_all(config={
-    'extra-imports': [],  # the names (strs) of imported modules
-    'allowed-io': [],     # the names (strs) of functions that call print/open/input
-    'max-line-length': 100,
-    'disable': ['E1136']
-    })
+    # import python_ta
+    # python_ta.check_all(config={
+    # 'extra-imports': [],  # the names (strs) of imported modules
+    # 'allowed-io': [],     # the names (strs) of functions that call print/open/input
+    # 'max-line-length': 100,
+    # 'disable': ['E1136']
+    # })
