@@ -35,6 +35,53 @@ class Page:
         raise NotImplementedError
 
 
+class UserInterface:
+    """A class representing the main user interface
+
+    Instance Attributes:
+    '   - mainframe: the main frame which all graphical elements will be displayed on
+        - search_variable: the StringVar object representing the name of the song being
+                           searched for
+        - graph: the SongGraph which will be used to search for the songs and
+                 get recommendations
+        - home_page: the homepage of the user interface
+        - results_page: the page which will display the results of the search
+        - recommend_page: the page which is responsible for displaying the recommendations
+                          for the given song and artist combination
+    """
+    mainframe: tk.Tk
+    search_variable: tk.StringVar
+    graph: SongGraph
+    home_page: HomePage
+    results_page: ResultsPage
+    recommend_page: RecommendationsPage
+
+    # Private Attributes:
+    #   -_current_page: the current page which is being displayed
+    _current_page: Page
+
+    def __init__(self, root: tk.Tk, graph: SongGraph) -> None:
+        """Initialize the user interface"""
+        self.mainframe = root
+        self.mainframe.title('Spotify Song Recommender')
+        self.graph = graph
+
+        # Initializing the pages
+        self.search_variable = tk.StringVar()
+        self.home_page = HomePage(self.mainframe, self, self.search_variable)
+        self.results_page = ResultsPage(self.mainframe, self, self.search_variable)
+        self.recommend_page = RecommendationsPage(self.mainframe, self)
+
+        self._current_page = self.home_page
+        self._current_page.show_page(True)
+
+    def change_current_page(self, page: Page) -> None:
+        """Change the current page to <page> and display it"""
+        self._current_page.show_page(False)
+        self._current_page = page
+        self._current_page.show_page(True)
+
+        
 class HomePage(Page):
     """A class representing the Homepage of the application"""
 
@@ -491,53 +538,6 @@ class SearchResults:
             self._song_info.place_forget()
             self._confrim_button.place_forget()
             self._empty_selection.place_forget()
-
-
-class UserInterface:
-    """A class representing the main user interface
-
-    Instance Attributes:
-    '   - mainframe: the main frame which all graphical elements will be displayed on
-        - search_variable: the StringVar object representing the name of the song being
-                           searched for
-        - graph: the SongGraph which will be used to search for the songs and
-                 get recommendations
-        - home_page: the homepage of the user interface
-        - results_page: the page which will display the results of the search
-        - recommend_page: the page which is responsible for displaying the recommendations
-                          for the given song and artist combination
-    """
-    mainframe: tk.Tk
-    search_variable: tk.StringVar
-    graph: SongGraph
-    home_page: HomePage
-    results_page: ResultsPage
-    recommend_page: RecommendationsPage
-
-    # Private Attributes:
-    #   -_current_page: the current page which is being displayed
-    _current_page: Page
-
-    def __init__(self, root: tk.Tk, graph: SongGraph) -> None:
-        """Initialize the user interface"""
-        self.mainframe = root
-        self.mainframe.title('Spotify Song Recommender')
-        self.graph = graph
-
-        # Initializing the pages
-        self.search_variable = tk.StringVar()
-        self.home_page = HomePage(self.mainframe, self, self.search_variable)
-        self.results_page = ResultsPage(self.mainframe, self, self.search_variable)
-        self.recommend_page = RecommendationsPage(self.mainframe, self)
-
-        self._current_page = self.home_page
-        self._current_page.show_page(True)
-
-    def change_current_page(self, page: Page) -> None:
-        """Change the current page to <page> and display it"""
-        self._current_page.show_page(False)
-        self._current_page = page
-        self._current_page.show_page(True)
 
 
 if __name__ == '__main__':
