@@ -3,7 +3,6 @@ A Module which is responsible for the user interface
 """
 from __future__ import annotations
 import tkinter as tk
-from tkinter.constants import BOTTOM, W
 from tkinter.font import BOLD
 from graphs import SongGraph
 
@@ -12,12 +11,19 @@ BG_COLOUR = 'gray10'
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 600
 
+
 class Page:
     """ an abstract class representing a single page in the application"""
+
+    # Private Instance Attributes:
+    #   - _frame: the object which the page will be displayed on
+    #   - _ui: the user interface object which will be mutated by the page
+
     _frame: tk.Tk
     _ui: UserInterface
 
     def __init__(self, frame: tk.Tk, user_interface: UserInterface) -> None:
+        """Initialize the page"""
         self._frame = frame
         self._ui = user_interface
 
@@ -33,6 +39,17 @@ class HomePage(Page):
     """A class representing the Homepage of the application"""
 
     # Private Instance Attributes:
+    #   - _frame: the object which the page will be displayed on
+    #   - _ui: the user interface object which will be mutated by the page
+    #   -_search_variable: a tk.StringVar representing the name of the song
+    #   -_text: a element of the page which displays the main text
+    #   -_search_field: a element of the page which allows the user
+    #                   to enter song names
+    #   - _submit_button: a button on the page which allows the user to submit
+    #                     their song name
+    #   -_error_message: an error message which will be displayed when the
+    #                    song is not found
+
     _frame: tk.Tk
     _ui: UserInterface
     _search_variable: tk.StringVar
@@ -41,8 +58,11 @@ class HomePage(Page):
     _submit_button: tk.Button
     _error_message: tk.Label
 
-    def __init__(self, frame: tk.Tk, user_interface: UserInterface, search_variable: tk.StringVar) -> None:
-        """Initialize the homepage object"""
+    def __init__(self,
+                 frame: tk.Tk,
+                 user_interface: UserInterface,
+                 search_variable: tk.StringVar) -> None:
+        """Initialize the homepage and all it's elements"""
         Page.__init__(self, frame, user_interface)
         self._search_variable = search_variable
 
@@ -60,21 +80,30 @@ class HomePage(Page):
                                         bg='forest green',
                                         fg='white')
 
-        self._search_field = tk.Entry(self._frame, textvariable=self._search_variable, font=('Verdana', 50), bg='gray95')
+        self._search_field = tk.Entry(self._frame,
+                                      textvariable=self._search_variable,
+                                      font=('Verdana', 50),
+                                      bg='gray95')
+
         self._error_message = tk.Label(self._frame,
-                              text='Sorry, that song is not in our database\n Try Again',
-                              bg=BG_COLOUR,
-                              fg='Red',
-                              font=('arialnarrow', 38))
+                                       text='Sorry, that song is not in our database\n Try Again',
+                                       bg=BG_COLOUR,
+                                       fg='Red',
+                                       font=('arialnarrow', 38))
 
     def _search(self) -> None:
-        """Search for the song name represented by self._search_variable in the song graph"""
+        """Search for the song name represented by self._search_variable in the song graph
+
+        If the song is not in graph, display an error message
+        """
         song_name = self._search_variable.get()
         artist_list = self._ui.graph.get_artists_by_song(song_name.lower())
 
         if artist_list == []:
             self._text.place_forget()
-            self._error_message.place(x=(WINDOW_WIDTH) // 2, y=(WINDOW_HEIGHT) // 4, anchor='center')
+            self._error_message.place(x=WINDOW_WIDTH // 2,
+                                      y=WINDOW_HEIGHT // 4,
+                                      anchor='center')
         else:
             self._ui.change_current_page(self._ui.results_page)
 
@@ -108,16 +137,30 @@ class ResultsPage(Page):
     This page is responsible for providing a graphical interface which displays the search results
     """
     # Private Instance Attributes:
+    #   - _frame: the object which the page will be displayed on
+    #   - _ui: the user interface object which will be mutated by the page
+    #   -_search_variable: a tk.StringVar representing the name of the song
+    #   -_search_field: a element of the page which allows the user
+    #                   to enter song names
+    #   - _submit_button: a button on the page which allows the user to submit
+    #                     their song name
+    #   -_home_button: a button that allows the user to return to the homepage
+    #   -_search_results: an instance of SearchResults which is responsible for displaying
+    #                     all the artists which the song could be by
+
     _frame: tk.Tk
     _ui: UserInterface
     _search_variable: tk.StringVar
+    _search_field: tk.Entry
     _submit_button: tk.Button
     _home_button: tk.Button
     _search_results: SearchResults
-    _artist_variable: tk.StringVar
 
-    def __init__(self, frame: tk.Tk, user_interface: UserInterface, search_variable: tk.StringVar) -> None:
-        """Initialize the Search results page"""
+    def __init__(self,
+                 frame: tk.Tk,
+                 user_interface: UserInterface,
+                 search_variable: tk.StringVar) -> None:
+        """Initialize the Search results page and all it's elements"""
         Page.__init__(self, frame, user_interface)
         self._search_variable = search_variable
         self._search_results = SearchResults(self._frame, user_interface)
@@ -125,8 +168,12 @@ class ResultsPage(Page):
         # Page Elements
         self._search_field = tk.Entry(self._frame, textvariable=self._search_variable, font=('Verdana', 20), bg='gray95')
 
-        self._submit_button = tk.Button(self._frame, text='Submit', command=self._show_results,
-                                       font=('arialnarrow', 15), bg='forest green', fg='white')
+        self._submit_button = tk.Button(self._frame,
+                                        text='Submit',
+                                        command=self._show_results,
+                                        font=('arialnarrow', 15),
+                                        bg='forest green',
+                                        fg='white')
 
         self._home_button = tk.Button(self._frame,
                                       text='Home',
@@ -135,7 +182,11 @@ class ResultsPage(Page):
                                       bg='gray60',
                                       fg='white')
 
-    def _show_results(self):
+    def _show_results(self) -> None:
+        """Show the results of the search on the page
+
+        That is, display all the names of the artists which the song could be by
+        """
         song_name = self._search_variable.get()
         artist_list = self._ui.graph.get_artists_by_song(song_name.lower())
         self._search_results.update_search(artist_list, song_name.lower())
@@ -143,6 +194,10 @@ class ResultsPage(Page):
 
 
     def show_page(self, truth: bool) -> None:
+        """Make the current page visible/invisble based on truth
+
+        If truth is true then make the page visible, otherwise, make it invisible
+        """
         if truth:
             self._search_field.place(x=WINDOW_WIDTH // 2, y=(WINDOW_HEIGHT // 15),
                                      width=WINDOW_WIDTH * 0.75, height=50, anchor='center')
@@ -162,27 +217,42 @@ class ResultsPage(Page):
 
 class RecommendationsPage(Page):
     """A class respresenting a page which will display the song recommendations from graph"""
+
+    # Private Attributes:
+    #   - _frame: the object which the page will be displayed on
+    #   - _ui: the user interface object which will be mutated by the page
+    #   -_home_button: a button which will change the current page to the homepage
+    #   -_back_button: a button which will change the current page to the previous page
+    #   -_recommendation_labels: a list of Label objects which will display the recommendations
+    #                            on the page
+    #   -_title: a Label object responsible for displaying the 'We Recommend Listening To' message
+
+    _frame: tk.Tk
+    _ui: UserInterface
     _home_button: tk.Button
     _back_button: tk.Button
-    _recommendations: list[tuple[str, str]]
-    _recommendation1: tk.Label
-    _recommendation2: tk.Label
-    _recommendation3: tk.Label
-    _recommendation4: tk.Label
-    _recommendation5: tk.Label
+    _recommendation_labels: list[tk.Label]
+    _title: tk.Label
 
     def __init__(self, frame: tk.Tk, user_interface: UserInterface) -> None:
+        """Initialize the RecommendationsPage and all it's graphical elements"""
         Page.__init__(self, frame, user_interface)
 
         # initializing the recommendations
-        self._recommendation1 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        self._recommendation2 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        self._recommendation3 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        self._recommendation4 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        self._recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation1 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation2 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation3 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation4 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+
+        self._recommendation_labels = [recommendation1,
+                                       recommendation2,
+                                       recommendation3,
+                                       recommendation4,
+                                       recommendation5]
 
         self._title = tk.Label(self._frame,
-                               text= 'We Recommend Listening To',
+                               text='We Recommend Listening To',
                                font=('Verdana', 40, BOLD),
                                bg=BG_COLOUR,
                                fg='deep sky blue',
@@ -195,7 +265,7 @@ class RecommendationsPage(Page):
                                       bg='gray60',
                                       width=20,
                                       height=5,
-                                      command= lambda: self._ui.change_current_page(self._ui.home_page))
+                                      command=lambda: self._ui.change_current_page(self._ui.home_page))
 
         self._back_button = tk.Button(self._frame,
                                       text='Back',
@@ -204,62 +274,80 @@ class RecommendationsPage(Page):
                                       bg='gray60',
                                       width=20,
                                       height=5,
-                                      command= lambda: self._ui.change_current_page(self._ui.results_page))
+                                      command=lambda: self._ui.change_current_page(self._ui.results_page))
 
     def update_recommended(self, song_name: str, song_artist: str) -> None:
-        self._recommendations = self._ui.graph.get_recommendations(song_name, song_artist, 5, 80)
+        """Update the recommendations based on the CURRENT song name and artist"""
+        recommendations_list = self._ui.graph.get_recommendations(song_name, song_artist, 5, 80)
 
-        recommendation_count = len(self._recommendations)
-
-        label_list = [self._recommendation1,
-                      self._recommendation2,
-                      self._recommendation3,
-                      self._recommendation4,
-                      self._recommendation5]
+        recommendation_count = len(recommendations_list)
 
         if recommendation_count < 5:
-            rest = label_list[recommendation_count:]
+            rest = self._recommendation_labels[recommendation_count:]
             for text in rest:
                 text.config(text='')
 
-        # configuring each label
         for i in range(recommendation_count):
-            label = label_list[i]
-            recommended_name, recommended_artist = self._recommendations[i]
+            label = self._recommendation_labels[i]
+            recommended_name, recommended_artist = recommendations_list[i]
             label.config(text=f'{recommended_name.title()} by {recommended_artist.title()}')
 
     def show_page(self, truth: bool) -> None:
+        """Make the current page visible/invisble based on the value of truth"""
         if truth:
             self._title.pack(side='top')
-            self._recommendation1.pack(side='top')
-            self._recommendation2.pack(side='top')
-            self._recommendation3.pack(side='top')
-            self._recommendation4.pack(side='top')
-            self._recommendation5.pack(side='top')
+
+            for recommendation in self._recommendation_labels:
+                recommendation.pack(side='top')
+
             self._home_button.place(x=30, y=WINDOW_HEIGHT - 130, width=200, height=100)
             self._back_button.place(x=WINDOW_WIDTH - 230, y=WINDOW_HEIGHT - 130, width=200, height=100)
         else:
             self._title.pack_forget()
-            self._recommendation1.pack_forget()
-            self._recommendation2.pack_forget()
-            self._recommendation3.pack_forget()
-            self._recommendation4.pack_forget()
-            self._recommendation5.pack_forget()
+
+            for recommendation in self._recommendation_labels:
+                recommendation.pack_forget()
+
             self._home_button.place_forget()
             self._back_button.place_forget()
 
 
 class SearchResults:
+    """A class respresenting the search result element of a page
+
+    This class is responsible for displaying the search results on the ResultsPage
+    as well as the artist selection
+    """
+    # Private Attributes:
+    #   - _frame: the object which the page will be displayed on
+    #   - _ui: the user interface object which will be mutated by the page
+    #   -_artist_list: a list of all the artist which the song searched for
+    #                  could be by
+    #   -_artist_listbox: a Listbox object which is responsible for displaying all
+    #                     the artists which the current song could be by
+    #   -_artist_variable: a StringVar object which will be passed into _artist_listbox which
+    #                      represents all the plausible artists the song could be by
+    #   -_song_info: a Label object which will display the song name
+    #   -_song_name: the name of the song being searched for
+    #   -_confirm_button: a button which will allow the user to confirm their selection of artist
+    #   -_error_message: an error message which will inform the user that the song being searched for
+    #                    was not found
+    #   -_empty_selection: an error message which will inform the user that they have not selected an
+    #                      artist yet
+
     _frame: tk.Tk
     _ui: UserInterface
     _artist_list: list[str]
     _artist_listbox: tk.Listbox
+    _artist_variable: tk.StringVar
     _song_info: tk.Label
-    _error_message: tk.Label
-    _confrim_button: tk.Button
     _song_name: str
+    _confrim_button: tk.Button
+    _error_message: tk.Label
+    _empty_selection: tk.Label
 
     def __init__(self, frame: tk.Tk, user_interface: UserInterface) -> None:
+        """Initialize the Search results and all it's graphical elements"""
         self._frame = frame
         self._ui = user_interface
         self._artist_list = []
@@ -306,6 +394,7 @@ class SearchResults:
                                          fg='red')
 
     def update_search(self, artist_list: list[str], song_name: str) -> None:
+        """Update the old song name and artists being displayed to the CURRENT song"""
         self._empty_selection.place_forget()
         self._artist_list = artist_list
         self._song_name = song_name
@@ -313,6 +402,11 @@ class SearchResults:
         self._song_info.config(text=f'{song_name.title()} by')
 
     def _update_recommendedpage(self) -> None:
+        """Update the current page to display recommendations for the CURRENT
+        song and artist
+
+        Display the empty_selection error message if user has no selected an artist
+        """
         selection = self._artist_listbox.curselection()
         if selection != ():
             self._ui.recommend_page.update_recommended(self._song_name, self._artist_list[selection[0]])
@@ -322,8 +416,11 @@ class SearchResults:
                                         y=WINDOW_HEIGHT - 100,
                                         anchor='center')
 
+    def show_artists(self, truth: bool) -> None:
+        """Display all the artists which the song could be by based on truth
 
-    def show_artists(self, truth) -> None:
+        make the SearchResults visible if and only if truth == True
+        """
         if truth:
             self._artist_listbox.place(x=WINDOW_WIDTH // 2,
                                        y=WINDOW_HEIGHT // 2,
@@ -355,7 +452,19 @@ class SearchResults:
 
 
 class UserInterface:
-    """A class representing the main user interface"""
+    """A class representing the main user interface
+
+    Instance Attributes:
+    '   - mainframe: the main frame which all graphical elements will be displayed on
+        - search_variable: the StringVar object representing the name of the song being
+                           searched for
+        - graph: the SongGraph which will be used to search for the songs and
+                 get recommendations
+        - home_page: the homepage of the user interface
+        - results_page: the page which will display the results of the search
+        - recommend_page: the page which is responsible for displaying the recommendations
+                          for the given song and artist combination
+    """
     mainframe: tk.Tk
     search_variable: tk.StringVar
     graph: SongGraph
@@ -363,6 +472,8 @@ class UserInterface:
     results_page: ResultsPage
     recommend_page: RecommendationsPage
 
+    # Private Attributes:
+    #   -_current_page: the current page which is being displayed
     _current_page: Page
 
     def __init__(self, root: tk.Tk, graph: SongGraph) -> None:
@@ -399,3 +510,11 @@ if __name__ == '__main__':
 
     UserInterface(root, graph)
     root.mainloop()
+
+    # import python_ta
+    # python_ta.check_all(config={
+    # 'extra-imports': [],  # the names (strs) of imported modules
+    # 'allowed-io': [],     # the names (strs) of functions that call print/open/input
+    # 'max-line-length': 100,
+    # 'disable': ['E1136']
+    # })
