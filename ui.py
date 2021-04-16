@@ -12,8 +12,11 @@ WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 600
 
 
-class Page:
-    """ an abstract class representing a single page in the application"""
+class _Page:
+    """ A private abstract class representing a single page in the application
+
+    This class is only meant to be used by the UserInterface class
+    """
 
     # Private Instance Attributes:
     #   - _frame: the object which the page will be displayed on
@@ -52,13 +55,13 @@ class UserInterface:
     mainframe: tk.Tk
     search_variable: tk.StringVar
     graph: SongGraph
-    home_page: HomePage
-    results_page: ResultsPage
-    recommend_page: RecommendationsPage
+    home_page: _HomePage
+    results_page: _ResultsPage
+    recommend_page: _RecommendationsPage
 
     # Private Attributes:
     #   -_current_page: the current page which is being displayed
-    _current_page: Page
+    _current_page: _Page
 
     def __init__(self, root: tk.Tk, graph: SongGraph) -> None:
         """Initialize the user interface"""
@@ -68,21 +71,21 @@ class UserInterface:
 
         # Initializing the pages
         self.search_variable = tk.StringVar()
-        self.home_page = HomePage(self.mainframe, self, self.search_variable)
-        self.results_page = ResultsPage(self.mainframe, self, self.search_variable)
-        self.recommend_page = RecommendationsPage(self.mainframe, self)
+        self.home_page = _HomePage(self.mainframe, self, self.search_variable)
+        self.results_page = _ResultsPage(self.mainframe, self, self.search_variable)
+        self.recommend_page = _RecommendationsPage(self.mainframe, self)
 
         self._current_page = self.home_page
         self._current_page.show_page(True)
 
-    def change_current_page(self, page: Page) -> None:
+    def change_current_page(self, page: _Page) -> None:
         """Change the current page to <page> and display it"""
         self._current_page.show_page(False)
         self._current_page = page
         self._current_page.show_page(True)
 
-        
-class HomePage(Page):
+
+class _HomePage(_Page):
     """A class representing the Homepage of the application"""
 
     # Private Instance Attributes:
@@ -110,7 +113,7 @@ class HomePage(Page):
                  user_interface: UserInterface,
                  search_variable: tk.StringVar) -> None:
         """Initialize the homepage and all it's elements"""
-        Page.__init__(self, frame, user_interface)
+        _Page.__init__(self, frame, user_interface)
         self._search_variable = search_variable
 
         # Page Elements
@@ -177,7 +180,7 @@ class HomePage(Page):
             self._error_message.place_forget()
 
 
-class ResultsPage(Page):
+class _ResultsPage(_Page):
     """A page representing the search results page in the application from the give graph
 
     This page is responsible for providing a graphical interface which displays the search results
@@ -200,16 +203,16 @@ class ResultsPage(Page):
     _search_field: tk.Entry
     _submit_button: tk.Button
     _home_button: tk.Button
-    _search_results: SearchResults
+    _search_results: _SearchResults
 
     def __init__(self,
                  frame: tk.Tk,
                  user_interface: UserInterface,
                  search_variable: tk.StringVar) -> None:
         """Initialize the Search results page and all it's elements"""
-        Page.__init__(self, frame, user_interface)
+        _Page.__init__(self, frame, user_interface)
         self._search_variable = search_variable
-        self._search_results = SearchResults(self._frame, user_interface)
+        self._search_results = _SearchResults(self._frame, user_interface)
 
         # Page Elements
         self._search_field = tk.Entry(self._frame,
@@ -270,7 +273,7 @@ class ResultsPage(Page):
             self._search_results.show_artists(False)
 
 
-class RecommendationsPage(Page):
+class _RecommendationsPage(_Page):
     """A class respresenting a page which will display the song recommendations from graph"""
 
     # Private Attributes:
@@ -291,7 +294,7 @@ class RecommendationsPage(Page):
 
     def __init__(self, frame: tk.Tk, user_interface: UserInterface) -> None:
         """Initialize the RecommendationsPage and all it's graphical elements"""
-        Page.__init__(self, frame, user_interface)
+        _Page.__init__(self, frame, user_interface)
 
         # initializing the recommendations
         recommendation1 = tk.Label(self._frame,
@@ -399,11 +402,11 @@ class RecommendationsPage(Page):
             self._back_button.place_forget()
 
 
-class SearchResults:
-    """A class respresenting the search result element of a page
+class _SearchResults:
+    """A private class respresenting the search result element of a page
 
     This class is responsible for displaying the search results on the ResultsPage
-    as well as the artist selection
+    as well as the artist selection, and should only be used by ResultsPage
     """
     # Private Attributes:
     #   - _frame: the object which the page will be displayed on
