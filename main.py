@@ -1,5 +1,8 @@
-from ui import UserInterface, WINDOW_HEIGHT, WINDOW_WIDTH, BG_COLOUR
+"""
+The module responsible for executing the program
+"""
 import tkinter as tk
+from ui import UserInterface, WINDOW_HEIGHT, WINDOW_WIDTH, BG_COLOUR
 from graphs import build_graph
 
 
@@ -20,3 +23,4 @@ def run_program() -> None:
 
 if __name__ == '__main__':
     run_program()
+    
