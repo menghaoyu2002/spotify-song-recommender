@@ -107,7 +107,6 @@ class HomePage(Page):
         else:
             self._ui.change_current_page(self._ui.results_page)
 
-
     def show_page(self, truth: bool) -> None:
         """Make the current page visible or invisible based on truth"""
         if truth:
@@ -119,10 +118,10 @@ class HomePage(Page):
                                      height=100,
                                      anchor='center')
 
-            self._submit_button.place(x=(WINDOW_WIDTH)//2,
-                                      y=WINDOW_HEIGHT//1.25,
+            self._submit_button.place(x=WINDOW_WIDTH // 2,
+                                      y=WINDOW_HEIGHT // 1.25,
                                       anchor='center',
-                                      width=WINDOW_WIDTH//4,
+                                      width=WINDOW_WIDTH // 4,
                                       height=100)
         else:
             self._text.place_forget()
@@ -166,7 +165,10 @@ class ResultsPage(Page):
         self._search_results = SearchResults(self._frame, user_interface)
 
         # Page Elements
-        self._search_field = tk.Entry(self._frame, textvariable=self._search_variable, font=('Verdana', 20), bg='gray95')
+        self._search_field = tk.Entry(self._frame,
+                                      textvariable=self._search_variable,
+                                      font=('Verdana', 20),
+                                      bg='gray95')
 
         self._submit_button = tk.Button(self._frame,
                                         text='Submit',
@@ -177,7 +179,8 @@ class ResultsPage(Page):
 
         self._home_button = tk.Button(self._frame,
                                       text='Home',
-                                      command=lambda: self._ui.change_current_page(self._ui.home_page),
+                                      command=lambda:
+                                      self._ui.change_current_page(self._ui.home_page),
                                       font=('arialnarrow', 15),
                                       bg='gray60',
                                       fg='white')
@@ -192,21 +195,26 @@ class ResultsPage(Page):
         self._search_results.update_search(artist_list, song_name.lower())
         self._search_results.show_artists(True)
 
-
     def show_page(self, truth: bool) -> None:
         """Make the current page visible/invisble based on truth
 
         If truth is true then make the page visible, otherwise, make it invisible
         """
         if truth:
-            self._search_field.place(x=WINDOW_WIDTH // 2, y=(WINDOW_HEIGHT // 15),
-                                     width=WINDOW_WIDTH * 0.75, height=50, anchor='center')
+            self._search_field.place(x=WINDOW_WIDTH // 2,
+                                     y=(WINDOW_HEIGHT // 15),
+                                     width=WINDOW_WIDTH * 0.75,
+                                     height=50, anchor='center')
 
-            self._submit_button.place(x=WINDOW_WIDTH - 10, y=(WINDOW_HEIGHT //15),
-                                      width=WINDOW_WIDTH//10, height=50, anchor='e',)
+            self._submit_button.place(x=WINDOW_WIDTH - 10,
+                                      y=WINDOW_HEIGHT // 15,
+                                      width=WINDOW_WIDTH // 10,
+                                      height=50, anchor='e',)
 
-            self._home_button.place(x=10, y=WINDOW_HEIGHT // 15,
-                                    width=WINDOW_WIDTH // 10, height=50, anchor='w')
+            self._home_button.place(x=10,
+                                    y=WINDOW_HEIGHT // 15,
+                                    width=WINDOW_WIDTH // 10,
+                                    height=50, anchor='w')
             self._show_results()
         else:
             self._search_field.place_forget()
@@ -239,11 +247,35 @@ class RecommendationsPage(Page):
         Page.__init__(self, frame, user_interface)
 
         # initializing the recommendations
-        recommendation1 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        recommendation2 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        recommendation3 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        recommendation4 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
-        recommendation5 = tk.Label(self._frame, bg=BG_COLOUR, fg='white', font=('Verdana', 18), pady=10)
+        recommendation1 = tk.Label(self._frame,
+                                   bg=BG_COLOUR,
+                                   fg='white',
+                                   font=('Verdana', 18),
+                                   pady=10)
+
+        recommendation2 = tk.Label(self._frame,
+                                   bg=BG_COLOUR,
+                                   fg='white',
+                                   font=('Verdana', 18),
+                                   pady=10)
+
+        recommendation3 = tk.Label(self._frame,
+                                   bg=BG_COLOUR,
+                                   fg='white',
+                                   font=('Verdana', 18),
+                                   pady=10)
+
+        recommendation4 = tk.Label(self._frame,
+                                   bg=BG_COLOUR,
+                                   fg='white',
+                                   font=('Verdana', 18),
+                                   pady=10)
+
+        recommendation5 = tk.Label(self._frame,
+                                   bg=BG_COLOUR,
+                                   fg='white',
+                                   font=('Verdana', 18),
+                                   pady=10)
 
         self._recommendation_labels = [recommendation1,
                                        recommendation2,
@@ -265,7 +297,8 @@ class RecommendationsPage(Page):
                                       bg='gray60',
                                       width=20,
                                       height=5,
-                                      command=lambda: self._ui.change_current_page(self._ui.home_page))
+                                      command=lambda:
+                                      self._ui.change_current_page(self._ui.home_page))
 
         self._back_button = tk.Button(self._frame,
                                       text='Back',
@@ -274,7 +307,8 @@ class RecommendationsPage(Page):
                                       bg='gray60',
                                       width=20,
                                       height=5,
-                                      command=lambda: self._ui.change_current_page(self._ui.results_page))
+                                      command=lambda:
+                                      self._ui.change_current_page(self._ui.results_page))
 
     def update_recommended(self, song_name: str, song_artist: str) -> None:
         """Update the recommendations based on the CURRENT song name and artist"""
@@ -300,8 +334,14 @@ class RecommendationsPage(Page):
             for recommendation in self._recommendation_labels:
                 recommendation.pack(side='top')
 
-            self._home_button.place(x=30, y=WINDOW_HEIGHT - 130, width=200, height=100)
-            self._back_button.place(x=WINDOW_WIDTH - 230, y=WINDOW_HEIGHT - 130, width=200, height=100)
+            self._home_button.place(x=30, y=WINDOW_HEIGHT - 130,
+                                    width=200,
+                                    height=100)
+
+            self._back_button.place(x=WINDOW_WIDTH - 230,
+                                    y=WINDOW_HEIGHT - 130,
+                                    width=200,
+                                    height=100)
         else:
             self._title.pack_forget()
 
@@ -330,10 +370,10 @@ class SearchResults:
     #   -_song_info: a Label object which will display the song name
     #   -_song_name: the name of the song being searched for
     #   -_confirm_button: a button which will allow the user to confirm their selection of artist
-    #   -_error_message: an error message which will inform the user that the song being searched for
-    #                    was not found
-    #   -_empty_selection: an error message which will inform the user that they have not selected an
-    #                      artist yet
+    #   -_error_message: an error message which will inform the user that the song being searched
+    #                    for was not found
+    #   -_empty_selection: an error message which will inform the user that they have not selected
+    #                      an artist yet
 
     _frame: tk.Tk
     _ui: UserInterface
@@ -409,7 +449,9 @@ class SearchResults:
         """
         selection = self._artist_listbox.curselection()
         if selection != ():
-            self._ui.recommend_page.update_recommended(self._song_name, self._artist_list[selection[0]])
+            song_name = self._song_name
+            artist = self._artist_list[selection[0]]
+            self._ui.recommend_page.update_recommended(song_name, artist)
             self._ui.change_current_page(self._ui.recommend_page)
         else:
             self._empty_selection.place(x=WINDOW_WIDTH // 2,
@@ -499,22 +541,22 @@ class UserInterface:
 
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    root.configure(background=BG_COLOUR)
+    # root = tk.Tk()
+    # root.configure(background=BG_COLOUR)
 
-    root.resizable(width=False, height=False)
-    root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
+    # root.resizable(width=False, height=False)
+    # root.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
 
-    from graphs import build_graph
-    graph = build_graph('data/data_large.csv')
+    # from graphs import build_graph
+    # graph = build_graph('data/data_large.csv')
 
-    UserInterface(root, graph)
-    root.mainloop()
+    # UserInterface(root, graph)
+    # root.mainloop()
 
-    # import python_ta
-    # python_ta.check_all(config={
-    # 'extra-imports': [],  # the names (strs) of imported modules
-    # 'allowed-io': [],     # the names (strs) of functions that call print/open/input
-    # 'max-line-length': 100,
-    # 'disable': ['E1136']
-    # })
+    import python_ta
+    python_ta.check_all(config={
+    'extra-imports': [],  # the names (strs) of imported modules
+    'allowed-io': [],     # the names (strs) of functions that call print/open/input
+    'max-line-length': 100,
+    'disable': ['E1136']
+    })
