@@ -41,7 +41,7 @@ class _Song:
     attributes: dict[str, Union[str, float]]
     neighbors: dict[_Song, float]
 
-    def __init__(self, attributes: dict[str, Union[str, float]]):
+    def __init__(self, attributes: dict[str, Union[str, float]]) -> None:
         """Initialize a song."""
         self.attributes = attributes
         self.neighbors = {}
@@ -76,14 +76,14 @@ class _Song:
         sum_similarity = 0
 
         for p in self.attributes:
-            if p != 'name' and p != 'artist' and p != 'genre':
+            if p not in ('name', 'artist', 'genre'):
                 original_num = self.attributes[p]
                 new_num = other.attributes[p]
 
                 diff = abs(original_num - new_num)
                 percent_diff = diff / property_ranges[p] * 100
                 sum_similarity += 100 - percent_diff
-            elif p == 'artist' or p == 'genre':
+            elif p in ('artist', 'genre'):
                 sum_similarity += 100
 
         similarity = sum_similarity / (len(self.attributes) - 1)
@@ -112,15 +112,19 @@ class SongGraph:
         if song not in self._vertices:
             self._vertices[song] = _Song(attributes)
 
-    def add_edge(self, song1: _Song, song2: _Song, similarity) -> None:
+    def add_edge(self, song1: _Song, song2: _Song, similarity: float) -> None:
         """Add an edge between the two songs in this graph.
+
+        Raise a ValueError if either song is not in the graph.
 
         Preconditions:
             - song1 != song2
-            - song1 in self._vertices.values() and song2 in self._vertices.values()
         """
-        song1.neighbors[song2] = similarity
-        song2.neighbors[song1] = similarity
+        if song1 in self._vertices.values() and song2 in self._vertices.values():
+            song1.neighbors[song2] = similarity
+            song2.neighbors[song1] = similarity
+        else:
+            raise ValueError
 
     def get_artists_by_song(self, name: str) -> list:
         """Returns a list of artist that have the song titled <name> in the graph."""
@@ -222,7 +226,7 @@ def _insert_song(lst: list, other: _Song, similarity: float) -> None:
     lst.append(((name, artist), similarity))
 
 
-def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold) -> \
+def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold: float) -> \
         list[tuple[str, str]]:
     """Return a list of up to the first num_songs songs in lst. If the similarity is 0, then the
     song is not included in the list."""
@@ -234,3 +238,14 @@ def _get_reformatted_songs(lst: list, num_songs: float, similarity_threshold) ->
             return lst_so_far
 
     return lst_so_far
+
+
+if __name__ == '__main__':
+    # import python_ta
+    # python_ta.check_all(config={
+    #     'extra-imports': ['csv', 'get_property_ranges'],  # the names (strs) of imported modules
+    #     'allowed-io': ['open'],     # the names (strs) of functions that call print/open/input
+    #     'max-line-length': 100,
+    #     'disable': ['E1136']
+    # })
+    pass
