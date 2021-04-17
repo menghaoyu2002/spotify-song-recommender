@@ -18,9 +18,10 @@ def get_property_ranges(songs_file: str) -> dict[str, float]:
                    [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf], [inf, n_inf],
                    [inf, n_inf]]
 
-    with open(songs_file, encoding="utf-8") as csv_file:
+    with open(songs_file, encoding='utf-8') as csv_file:
         reader = csv.reader(csv_file)
         next(reader)
+
         for line in reader:
             for i in range(11):
                 if i == 7 and line[11][1] == ',':
@@ -46,3 +47,15 @@ def get_property_ranges(songs_file: str) -> dict[str, float]:
         'speechiness': abs(dict_values[9][0] - dict_values[9][1]),
         'popularity': abs(dict_values[10][0] - dict_values[10][1])
     }
+
+
+if __name__ == '__main__':
+    # import python_ta
+    # python_ta.check_all(config={
+    #     'extra-imports': ['csv', 'math'],  # the names (strs) of imported modules
+    #     'allowed-io': ['open'],     # the names (strs) of functions that call print/open/input
+    #     'max-line-length': 100,
+    #     'disable': ['E1136']
+    # })
+    pass
+
